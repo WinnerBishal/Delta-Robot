@@ -64,5 +64,5 @@ class DeltaRobot:
         self.calculate_bicep_endpoints()
         self.calculate_centers_of_spheres()
         self.calculate_intersection()
-        return self.TCP
+        return np.around(self.TCP, 2)
     
