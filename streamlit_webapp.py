@@ -4,10 +4,10 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-from delta_robot import DeltaRobot  # Assuming you have your DeltaRobot class in delta_robot.py
+from delta_robot import DeltaRobot, plot_delta_robot  # Assuming you have your DeltaRobot class in delta_robot.py
 
 # Create two columns
-col1, col2 = st.columns([1, 1])
+col1, col2 = st.tabs(['Visualize Delta Robot Schematic for Input Angle', 'Calculate Forward & Reverse Kinematics'])
 
 # Default robot parameters, initialize variables
 r = 200
@@ -20,7 +20,7 @@ J2 = 0
 J3 = 0
 X_in = 0
 Y_in = 0
-Z_in = 0
+Z_in = -347
 
 # Widget for configuring robot parameters
 st.sidebar.title("Configure Robot Parameters")
@@ -50,9 +50,9 @@ if st.sidebar.button("Input Angles"):
 
 if state.input_angles:
     # Input fields for joint angles
-    J1 = st.sidebar.number_input("J1", -90, 90, 0)
-    J2 = st.sidebar.number_input("J2", -90, 90, 0)
-    J3 = st.sidebar.number_input("J3", -90, 90, 0)
+    J1 = st.sidebar.slider("J1", -90, 90, 0)
+    J2 = st.sidebar.slider("J2", -90, 90, 0)
+    J3 = st.sidebar.slider("J3", -90, 90, 0)
 
 
 if st.sidebar.button("Input TCP"):
@@ -61,17 +61,17 @@ if st.sidebar.button("Input TCP"):
 if state.input_TCP:
     X_in = st.sidebar.number_input("X", value = 0.0)
     Y_in = st.sidebar.number_input("Y", value = 0.0)
-    Z_in = st.sidebar.number_input("Z", value = 0.0)
+    Z_in = st.sidebar.number_input("Z", value = -346.0)
 
 robot = DeltaRobot(r, h, s, k, Zt)
-TCP = robot.calculate_kinematics(J1, J2, J3)
-ANG = [0.0, 0.0, 0.0]
+TCP = robot.calculate_fwd_kinematics(J1, J2, J3)
+ANG = robot.calculate_inv_kinematics(X_in, Y_in, Z_in)
 
 #Store results in dataframe
 fwd_kine_df = pd.DataFrame({'Input Angles \n (J1, J2, J3)': [(J1, J2, J3)], 'Calculated TCP \n (X, Y, Z)': [(TCP[0], TCP[1], TCP[2])]})
 inv_kine_df = pd.DataFrame({'Input TCP \n (X, Y, Z)': [(X_in, Y_in, Z_in)], 'Calculated Angles \n (J1, J2, J3)': [(ANG[0],ANG[1],ANG[2])]})
 
-col2.header("Robot Calculation Results")
+
 fwd_tab, inv_tab = col2.tabs(['Forward Kinematics Results', 'Inverse Kinematics Results'])
 
 # Display the TCP results in forward knematics tab
@@ -82,9 +82,12 @@ fwd_tab.dataframe(fwd_kine_df, hide_index = True)
 inv_tab.dataframe(inv_kine_df, hide_index = True)
 
 # Plot the robot in the first column
-col1.header("Visualization of Delta Robot Kinematics")
 with col1:
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
-    # Add your plotting code here
-    st.pyplot(fig)
+    fig = plot_delta_robot(robot.B1, robot.B2, robot.B3, robot.WP, robot.r, robot.s)
+    st.plotly_chart(fig, use_container_width= True)
+
+# importing libraries for plotting
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+

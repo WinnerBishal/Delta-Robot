@@ -1,6 +1,10 @@
 import numpy as np
 import math
 import roboticstoolbox as rtb
+from scipy.optimize import fsolve
+import matplotlib.pyplot as plt
+import warnings
+import plotly.graph_objects as go
 
 
 class DeltaRobot:
@@ -11,6 +15,7 @@ class DeltaRobot:
         self.k = k
         self.Zt = Zt
 
+    # FORWARD KINEMATICS
     def set_joint_angles(self, J1, J2, J3):
         self.J1 = J1
         self.J2 = J2
@@ -59,10 +64,120 @@ class DeltaRobot:
         self.WP = self.P1 + x * x_hat + y * y_hat + z * z_hat
         self.TCP = self.WP + self.Zt * z_hat
 
-    def calculate_kinematics(self, J1, J2, J3):
+    def calculate_fwd_kinematics(self, J1, J2, J3):
         self.set_joint_angles(J1, J2, J3)
         self.calculate_bicep_endpoints()
         self.calculate_centers_of_spheres()
         self.calculate_intersection()
         return np.around(self.TCP, 2)
     
+    # INVERSE KINEMATICS
+    def set_TCP(self, X_in, Y_in, Z_in):
+        self.WP_1 = np.array([X_in, Y_in, Z_in + self.Zt])
+        self.pos_rot = rtb.ET.Rz(120, 'degrees')
+        self.pos_rot = self.pos_rot.A()[:3, :3]
+        
+        self.WP_2 = np.matmul(self.pos_rot, self.WP_1)
+
+        self.neg_rot = rtb.ET.Rz(-120, 'degrees')
+        self.neg_rot = self.neg_rot.A()[:3, :3]
+
+        self.WP_3 = np.matmul(self.neg_rot, self.WP_1)
+        
+        self.WP_s = [self.WP_1, self.WP_2, self.WP_3]
+
+    def solve_circles(self):
+        # Solving the intersecting circles
+        self.solved_joints = []
+
+        for i in range(3):
+            def equations(vars):
+                B_x = vars[0]
+                B_z = vars[1]
+                eq1 = (B_x - self.r)**2 + B_z**2 - self.h**2
+                eq2 = (B_x - self.WP_s[i][0] - self.s)**2 + (B_z-self.WP_s[i][2])**2 - self.k**2 + self.WP_s[i][1]**2
+                return np.array([eq1, eq2]) 
+              
+            initial_guess = [self.r+self.h, 0]
+            try:
+                roots = fsolve(equations, initial_guess)
+                joint_angle = np.degrees(np.arctan2(float(roots[1]), float(roots[0])))
+                self.solved_joints.append(round(joint_angle, 1))
+            except Exception as e:
+                warnings.warn(f"Failed to solve the system of equations: {e}")
+
+    def calculate_inv_kinematics(self, X_in, Y_in, Z_in):
+        self.set_TCP(X_in, Y_in, Z_in)
+        self.solve_circles()
+        return self.solved_joints
+    
+
+def plot_delta_robot(B1, B2, B3, WP, r, s):
+    # Create the figure
+    fig = go.Figure(layout = go.Layout(height = 600, autosize = True))
+
+    # Generate coordinates for base circle
+    theta = np.linspace(0, 2*np.pi, 100)
+    x = r * np.cos(theta)
+    y = r * np.sin(theta)
+    z = np.zeros_like(theta)  # base circle rests on XY plane
+
+    # Plot base circle
+    fig.add_trace(go.Scatter3d(x=x, y=y, z=z, mode='lines', line=dict(color='red')))
+
+    # Mark the center of the base circle
+    fig.add_trace(go.Scatter3d(x=[0], y=[0], z=[0], mode='markers', marker=dict(color='red', size=5)))
+
+    # Calculate and plot joint coordinates
+    base_joints = []
+    Bs = [B1, B2, B3]
+    for i in range(3):
+        angle_rad = 2 * np.pi * i / 3  # 120 degrees apart, start from positive y-axis
+        joint = [r * np.cos(angle_rad), r * np.sin(angle_rad), 0]
+        base_joints.append(joint)
+        fig.add_trace(go.Scatter3d(x=[joint[0]], y=[joint[1]], z=[joint[2]], mode='markers', marker=dict(color='blue', size=5)))  # plot joint
+
+        # Plot line from joint to B
+        fig.add_trace(go.Scatter3d(x=[joint[0], Bs[i][0]], y=[joint[1], Bs[i][1]], z=[joint[2], Bs[i][2]], mode='lines', line=dict(color='green')))
+
+    # Generate coordinates for end effector circle
+    x_ee = WP[0] + s * np.cos(theta)
+    y_ee = WP[1] + s * np.sin(theta)
+    z_ee = WP[2] * np.ones_like(theta)
+
+    # Plot end effector circle
+    fig.add_trace(go.Scatter3d(x=x_ee, y=y_ee, z=z_ee, mode='lines', line=dict(color='red')))
+
+    # Mark the center of the end effector circle
+    fig.add_trace(go.Scatter3d(x=[WP[0]], y=[WP[1]], z=[WP[2]], mode='markers', marker=dict(color='blue', size=5)))
+
+    # Plot end effector joints
+    end_effector_joints = []
+    for i in range(3):
+        angle_rad = 2 * np.pi * i / 3  # 120 degrees apart, start from positive y-axis
+        joint_ee = [WP[0] + s * np.cos(angle_rad), WP[1] + s * np.sin(angle_rad), WP[2]]
+        end_effector_joints.append(joint_ee)
+        fig.add_trace(go.Scatter3d(x=[joint_ee[0]], y=[joint_ee[1]], z=[joint_ee[2]], mode='markers', marker=dict(color='blue', size=5)))  # plot joint
+
+        # Plot line from B to end effector joint
+        fig.add_trace(go.Scatter3d(x=[Bs[i][0], joint_ee[0]], y=[Bs[i][1], joint_ee[1]], z=[Bs[i][2], joint_ee[2]], mode='lines', line=dict(color='purple')))
+
+    fig.update_layout(scene=dict(
+        xaxis_title='X',
+        yaxis_title='Y',
+        zaxis_title='Z',
+        aspectratio=dict(x=1, y=1, z=1),
+        camera=dict(
+            up=dict(x=0, y=0, z=1),
+            center=dict(x=0, y=0, z=0),
+            eye=dict(x=1.5, y=1.5, z=0.5)
+        ),
+        xaxis=dict(range=[-500, 500]),
+        yaxis=dict(range=[-500, 500]),
+        zaxis=dict(range=[-500, 200]))
+    )
+
+    return fig
+
+
+
