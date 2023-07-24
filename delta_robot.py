@@ -102,7 +102,7 @@ class DeltaRobot:
             try:
                 roots = fsolve(equations, initial_guess)
                 joint_angle = np.degrees(np.arctan2(float(roots[1]), float(roots[0])))
-                self.solved_joints.append(round(joint_angle, 1))
+                self.solved_joints.append(round(-(1.66021)*joint_angle, 2))
             except Exception as e:
                 warnings.warn(f"Failed to solve the system of equations: {e}")
 
@@ -174,7 +174,7 @@ def plot_delta_robot(B1, B2, B3, WP, r, s):
         ),
         xaxis=dict(range=[-500, 500]),
         yaxis=dict(range=[-500, 500]),
-        zaxis=dict(range=[-500, 200]))
+        zaxis=dict(range=[-600, 200]))
     )
 
     return fig

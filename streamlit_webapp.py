@@ -50,18 +50,18 @@ if st.sidebar.button("Input Angles"):
 
 if state.input_angles:
     # Input fields for joint angles
-    J1 = st.sidebar.slider("J1", -90, 90, 0)
-    J2 = st.sidebar.slider("J2", -90, 90, 0)
-    J3 = st.sidebar.slider("J3", -90, 90, 0)
+    J1 = st.sidebar.number_input("J1", -90.00, 90.00, value = 0.00)
+    J2 = st.sidebar.number_input("J2", -90.00, 90.00, value = 0.00)
+    J3 = st.sidebar.number_input("J3", -90.00, 90.00, value = 0.00)
 
 
 if st.sidebar.button("Input TCP"):
     state.input_TCP = not state.input_TCP
 
 if state.input_TCP:
-    X_in = st.sidebar.number_input("X", value = 0.0)
-    Y_in = st.sidebar.number_input("Y", value = 0.0)
-    Z_in = st.sidebar.number_input("Z", value = -346.0)
+    X_in = st.sidebar.number_input("X", -400.00, 400.00, value = 0.00)
+    Y_in = st.sidebar.number_input("Y", -400.00, 400.00, value = 0.00)
+    Z_in = st.sidebar.number_input("Z", -600.00, 200.00, value = -347.00)
 
 robot = DeltaRobot(r, h, s, k, Zt)
 TCP = robot.calculate_fwd_kinematics(J1, J2, J3)
@@ -85,9 +85,4 @@ inv_tab.dataframe(inv_kine_df, hide_index = True)
 with col1:
     fig = plot_delta_robot(robot.B1, robot.B2, robot.B3, robot.WP, robot.r, robot.s)
     st.plotly_chart(fig, use_container_width= True)
-
-# importing libraries for plotting
-import numpy as np
-import matplotlib.pyplot as plt
-import pandas as pd
 
