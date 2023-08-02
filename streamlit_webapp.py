@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-from delta_robot import DeltaRobot, plot_delta_robot  # Assuming you have your DeltaRobot class in delta_robot.py
+from delta_robot import DeltaRobot, plot_delta_robot  # Assuming DeltaRobot class is in delta_robot.py
 
 # Create two columns
 col1, col2 = st.tabs(['Visualize Delta Robot Schematic for Input Angle', 'Calculate Forward & Reverse Kinematics'])
