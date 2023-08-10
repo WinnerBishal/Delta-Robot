@@ -1,6 +1,6 @@
 pandas
 numpy
 matplotlib
-roboticstoolbox
+roboticstoolbox-python
 scipy
 plotly
