@@ -135,7 +135,7 @@ def plot_delta_robot(B1, B2, B3, WP, r, s):
         angle_rad = 2 * np.pi * i / 3  # 120 degrees apart, start from positive y-axis
         joint = [r * np.cos(angle_rad), r * np.sin(angle_rad), 0]
         base_joints.append(joint)
-        fig.add_trace(go.Scatter3d(x=[joint[0]], y=[joint[1]], z=[joint[2]], mode='markers', marker=dict(color='blue', size=5)))  # plot joint
+        fig.add_trace(go.Scatter3d(x=[joint[0]], y=[joint[1]], z=[joint[2]], mode='markers', marker=dict(color='blue', size=3)))  # plot joint
 
         # Plot line from joint to B
         fig.add_trace(go.Scatter3d(x=[joint[0], Bs[i][0]], y=[joint[1], Bs[i][1]], z=[joint[2], Bs[i][2]], mode='lines', line=dict(color='green')))
@@ -149,7 +149,7 @@ def plot_delta_robot(B1, B2, B3, WP, r, s):
     fig.add_trace(go.Scatter3d(x=x_ee, y=y_ee, z=z_ee, mode='lines', line=dict(color='red')))
 
     # Mark the center of the end effector circle
-    fig.add_trace(go.Scatter3d(x=[WP[0]], y=[WP[1]], z=[WP[2]], mode='markers', marker=dict(color='blue', size=5)))
+    fig.add_trace(go.Scatter3d(x=[WP[0]], y=[WP[1]], z=[WP[2]], mode='markers', marker=dict(color='blue', size=3)))
 
     # Plot end effector joints
     end_effector_joints = []
@@ -157,7 +157,7 @@ def plot_delta_robot(B1, B2, B3, WP, r, s):
         angle_rad = 2 * np.pi * i / 3  # 120 degrees apart, start from positive y-axis
         joint_ee = [WP[0] + s * np.cos(angle_rad), WP[1] + s * np.sin(angle_rad), WP[2]]
         end_effector_joints.append(joint_ee)
-        fig.add_trace(go.Scatter3d(x=[joint_ee[0]], y=[joint_ee[1]], z=[joint_ee[2]], mode='markers', marker=dict(color='blue', size=5)))  # plot joint
+        fig.add_trace(go.Scatter3d(x=[joint_ee[0]], y=[joint_ee[1]], z=[joint_ee[2]], mode='markers', marker=dict(color='blue', size=3)))  # plot joint
 
         # Plot line from B to end effector joint
         fig.add_trace(go.Scatter3d(x=[Bs[i][0], joint_ee[0]], y=[Bs[i][1], joint_ee[1]], z=[Bs[i][2], joint_ee[2]], mode='lines', line=dict(color='purple')))
@@ -178,6 +178,7 @@ def plot_delta_robot(B1, B2, B3, WP, r, s):
     )
 
     return fig
+
 
 
 
