@@ -4,4 +4,13 @@
 Let's embark on this journey where you see a seamless integration of Mechanical Design, Kinematic Analysis, 3D Printing, Microcontroller Programming and Python Programming in the creation of a
 functional protoype of Industrial Delta Robot.
 
-What's the project all about ?
+What to expect ?
+1. Mechanical Design and Assembly in SOLIDWORKS
+2. 3D Printing more than half of the parts
+3. Nema 23 Stepper Motor controls with Arduino
+4. OpenCV for detecting tomatoes and location
+5. Pick and Place Operation on a moving conveyer
+6. Streamlit webapp for Kinematic Calculations 
+7. PyQt5 GUI for user interaction and visualization
+8. And some more...
+
