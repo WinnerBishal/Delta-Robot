@@ -15,5 +15,5 @@ What to expect ?
 8. And some more...
 
 Here are some snapshots of the GUI :
-![GUI_Manual Operation Page] (https://i.imgur.com/KztioIv.png)
-![Streamlit Webapp Path Planning] (https://i.imgur.com/pBAtAR9.png)
+![GUI_Manual Operation Page](https://i.imgur.com/KztioIv.png)
+![Streamlit Webapp Path Planning](https://i.imgur.com/pBAtAR9.png)
