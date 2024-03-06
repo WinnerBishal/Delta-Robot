@@ -1,0 +1,8 @@
+names:
+- fully_ripened
+- green
+- half_ripened
+nc: 3
+path: ..
+train: d:\DELL XPS Backup Bishal\Bishal\DELTA\Datasets\laboro\dataset\images\train
+val: d:\DELL XPS Backup Bishal\Bishal\DELTA\Datasets\laboro\dataset\images\val

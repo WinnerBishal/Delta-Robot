@@ -12,16 +12,16 @@ col1, col2, col3 = st.tabs(['Visualize Delta Robot Schematic for Input Angle', '
 
 # Default robot parameters, initialize variables
 r = 200
-h = 300
-s = 140
-k = 500
+h = 200
+s = 50
+k = 400
 Zt = 0
 J1 = 0
 J2 = 0
 J3 = 0
 X_in = 0
 Y_in = 0
-Z_in = -347
+Z_in = -325
 
 # Widget for configuring robot parameters
 st.sidebar.title("Configure Robot Parameters")
@@ -40,9 +40,9 @@ if st.sidebar.button("Configure Robot"):
 if state.configure_robot:
     # Input fields for robot parameters
     r = st.sidebar.number_input("Base Radius (r)", value=200)
-    h = st.sidebar.number_input("Bicep Length (h)", value=300)
-    s = st.sidebar.number_input("End Effector Radius (s)", value=140)
-    k = st.sidebar.number_input("Arm Length (k)", value=500)
+    h = st.sidebar.number_input("Bicep Length (h)", value=200)
+    s = st.sidebar.number_input("End Effector Radius (s)", value=50)
+    k = st.sidebar.number_input("Arm Length (k)", value=400)
     Zt = st.sidebar.number_input("Wrist Point to TCP Height (Zt)", value=0)
 
 st.sidebar.title("Input for Calculations")
@@ -62,7 +62,7 @@ if st.sidebar.button("Input TCP"):
 if state.input_TCP:
     X_in = st.sidebar.number_input("X", -400.00, 400.00, value = 0.00)
     Y_in = st.sidebar.number_input("Y", -400.00, 400.00, value = 0.00)
-    Z_in = st.sidebar.number_input("Z", -600.00, 200.00, value = -347.00)
+    Z_in = st.sidebar.number_input("Z", -600.00, 200.00, value = -193.00)
 
 robot = DeltaRobot(r, h, s, k, Zt)
 TCP = robot.calculate_fwd_kinematics(J1, J2, J3)

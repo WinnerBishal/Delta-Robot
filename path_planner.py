@@ -1,16 +1,19 @@
 import numpy as np
 import plotly.graph_objects as go
+from multi_page_ui import send_command
 
 class PathPlanner:
     def __init__(self, P0, P1, P2, P3, robot):
         self.P0 = P0
         self.P1 = P1
-        self.P2 = P2
+        self.P2 = P2 
         self.P3 = P3
         self.robot = robot                         # Expects class DeltaRobot with all robot parameters
         self.t = np.linspace(0, 1, 100)
 
     def lerp(self, start_p, end_p, t):
+        start_p = np.array(start_p)
+        end_p = np.array(end_p)
         return (1 - t) * start_p + t * end_p
     
     def generate_spline(self):
@@ -65,13 +68,12 @@ class PathPlanner:
         # convert the spline to joint angles
         self.spline_to_joints()
 
-
     def generate_line(self):
         # Interpolate line between P0 and P3
         self.line = []
         for t in self.t:
             self.line.append(self.lerp(self.P0, self.P3, t))
-        
+            
         return self.line
     
     def plot_line(self, robot_fig):
@@ -105,4 +107,3 @@ class PathPlanner:
 
         # convert the line to joint angles
         self.line_to_joints()
-    
