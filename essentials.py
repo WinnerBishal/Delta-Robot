@@ -632,7 +632,7 @@ class PNPTestPath():
                 current_angle = max(motor_angles)
                 _, time_to_execute = self.calculate_steps_and_time(np.abs(current_angle - last_angle))
                 last_picked_time += time_to_execute
-                print(f'Last picked time: {last_picked_time}')
+                # print(f'Last picked time: {last_picked_time}')
                 # Add commands including gripper state (assuming 1 for grip and 0 for release)
                 commands.append([*motor_angles, 1])  # Gripping
                 last_angle = current_angle
@@ -646,7 +646,7 @@ class PNPTestPath():
                 objects[j, 1] += self.CONVEYOR_SPEED * last_picked_time
             
             current_pos = self.green_box_location
-        print(f'Total estimated time to complete path: {time_since_framed}')
+        # print(f'Total estimated time to complete path: {time_since_framed}')
         path_back_to_home = self.create_elevated_spline(self.green_box_location, home_pos)
         full_path.extend(path_back_to_home)
         
@@ -657,7 +657,7 @@ class PNPTestPath():
         # Append All Paths
         self.full_path = full_path
         self.commands = commands
-        print(self.commands)
+        # print(self.commands)
         return commands, full_path
         
     
