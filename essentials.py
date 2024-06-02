@@ -215,7 +215,36 @@ def send_command(ser, calibrate_motor=None, m1=None, m2=None, m3=None, gripper=N
             response = ser.readline().strip()
             # print(f"Arduino says: {response}")
             break
+
+def send_commands(ser, calibrate_motor=None, m1=0, m2=0, m3=0, gripper=None):
+    command_parts = []
     
+    # Calibration command
+    if calibrate_motor is not None:
+        command_parts.append(f"C{calibrate_motor}:1")
+    
+    # Movement commands
+    command_parts.append(f"{angle_to_steps(m1)}a")
+    command_parts.append(f"{angle_to_steps(m2)}b")
+    command_parts.append(f"{angle_to_steps(m3)}c")
+    
+    # Gripper command
+    if gripper is not None:
+        command_parts.append(f"G:{gripper}")
+    
+    # Construct the full command string
+    full_command = ''.join(command_parts) + '?'
+    # Send the command to the Arduino
+    ser.write(full_command.encode())
+    print("Sent command: ", full_command)
+
+
+def angle_to_steps(angle):
+    # Microsteppeing
+    steps_per_revolution = 200
+    steps = int((angle* steps_per_revolution) / 360 )
+    return steps
+
 class DeltaRobot:
     def __init__(self, r, h, s, k, Zt):
         self.r = r
@@ -327,7 +356,7 @@ class DeltaRobot:
                 roots = fsolve(equations, initial_guess)
                 joint_angle = np.degrees(np.arctan2(float(roots[1]), float(roots[0]) - self.r))
                 self.solved_joints.append(round(joint_angle, 4))
-                # -(1.66021)*
+
             except Exception as e:
                 warnings.warn(f"Failed to solve the system of equations: {e}")
 
