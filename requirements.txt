@@ -4,3 +4,6 @@ matplotlib
 roboticstoolbox-python
 scipy
 plotly
+opencv-python
+ultralytics
+seaborn
