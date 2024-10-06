@@ -4,6 +4,6 @@ matplotlib
 roboticstoolbox-python
 scipy
 plotly
-opencv-python
+opencv-python-headless
 ultralytics
 seaborn
