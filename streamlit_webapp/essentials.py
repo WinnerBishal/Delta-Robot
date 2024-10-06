@@ -1,9 +1,7 @@
-import cv2, math, time, warnings
+import cv2, warnings
 import numpy as np
 import plotly.graph_objects as go
 import numpy as np
-from scipy.spatial import distance
-import math
 import roboticstoolbox as rtb
 from scipy.optimize import fsolve
 import matplotlib.pyplot as plt
@@ -11,7 +9,6 @@ import warnings
 import plotly.graph_objects as go
 from ultralytics import YOLO
 import seaborn as sns
-import modern_robotics as mr
 
 '''
 List of available elements:
