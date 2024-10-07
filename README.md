@@ -1,4 +1,4 @@
-# Delta Robot for Advanced Grading in Conveyor Systems
+# Industrial Delta Robot
 
 ## Overview
 
