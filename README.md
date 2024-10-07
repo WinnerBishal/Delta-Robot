@@ -12,7 +12,12 @@ This project focuses on the **design, fabrication, and testing** of a **camera-e
 - Python GUI for interacting with actual robot : https://github.com/WinnerBishal/Delta-Robot/tree/master/delta_gui
 - All Solidworks Design and Assembly Files : https://github.com/WinnerBishal/Delta-Robot/tree/master/solidworks_design_files
 - Find ROS2 code in another repository : https://github.com/WinnerBishal/ROS2_delta_robot
-- 
+
+
+
+https://github.com/user-attachments/assets/9670b60e-34f7-4394-b9da-4f849989f6b0
+
+
 
 ## Project Objectives
 
